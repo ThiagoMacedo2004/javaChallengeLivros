@@ -21,7 +21,7 @@ public class Application implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
-		Menu menu = new Menu(repositorio);
+		Menu menu = new Menu(this.repositorio);
 		menu.menu();
 	}
 }

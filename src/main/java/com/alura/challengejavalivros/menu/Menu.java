@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Scanner;
 
 public class Menu {
-    private final String URL_API = "https://gutendex.com/books/?search=dom+casmurro";
+    private final String URL_API = "https://gutendex.com/books/?search=";
     private ConsultaApi consulta = new ConsultaApi();
     private Scanner scanner = new Scanner(System.in);
     private ConverteDados conversor = new ConverteDados();
@@ -27,9 +27,14 @@ public class Menu {
     public void menu() {
 
         var menu = """
-                ---EXIBIR LIVRO ? ---
-                1 - SIM
-                2 - NÃO
+                \nSELECIONE UM NUMERO DE SUA OPÇÃO:
+                
+                1) Buscar livro pelo seu título
+                2) Listar livros registrados
+                3) Listar autores registrados
+                4) Listar autores vivos em um determinado ano
+                5) Listar livro em um determinado idioma
+                0) Sair
                 """;
         boolean mostrarMenu = true;
         while (mostrarMenu) {
@@ -38,13 +43,9 @@ public class Menu {
 
             switch (opcao) {
                 case "1":
-                    var json = consulta.resultadoApi(URL_API);
-                    System.out.println(json);
-                    Livro results = conversor.obterDados(json, Livro.class);
-                    var autor = results.result().getFirst().autores().getFirst();
-                    AutorDb autorDb = new AutorDb(autor);
-                    System.out.println(results.result());
-                    repositorio.save(autorDb);
+                    System.out.println("Informe o um título: ");
+                    var titulo = scanner.nextLine().toLowerCase().replace(" ", "%20");
+                    this.salvarAutor(titulo);
                     mostrarMenu = false;
                     break;
                 default:
@@ -54,6 +55,15 @@ public class Menu {
         }
 
 
+    }
+
+    public void salvarAutor(String titulo) {
+        var json = consulta.resultadoApi(URL_API + titulo);
+        Livro results = conversor.obterDados(json, Livro.class);
+
+        var autor = results.result().getFirst().autores().getFirst();
+        AutorDb autorDb = new AutorDb(autor);
+        repositorio.save(autorDb);
     }
 
 }
