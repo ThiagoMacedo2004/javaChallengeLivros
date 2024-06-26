@@ -2,6 +2,7 @@ package com.alura.challengejavalivros.model;
 
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -15,10 +16,12 @@ public class AutorDb {
 
     @Column(unique = true)
     private String nome;
-
     private Integer dataNascimento;
-
     private Integer dataMorte;
+    @OneToMany(mappedBy = "autor", cascade = CascadeType.ALL)
+    private List<LivroDb> livros = new ArrayList<>();
+
+    public AutorDb(){};
 
     public AutorDb(Autor autor){
         this.nome = autor.nome();
@@ -36,6 +39,15 @@ public class AutorDb {
 
     public String getNome() {
         return nome;
+    }
+
+    public List<LivroDb> getLivros() {
+        return livros;
+    }
+
+    public void setLivros(List<LivroDb> livros) {
+        this.livros.forEach(l -> l.setAutor(this));
+        this.livros = livros;
     }
 
     public void setNome(String nome) {

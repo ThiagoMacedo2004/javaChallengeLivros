@@ -1,9 +1,6 @@
 package com.alura.challengejavalivros.menu;
 
-import com.alura.challengejavalivros.model.Autor;
-import com.alura.challengejavalivros.model.AutorDb;
-import com.alura.challengejavalivros.model.Livro;
-import com.alura.challengejavalivros.model.Results;
+import com.alura.challengejavalivros.model.*;
 import com.alura.challengejavalivros.repository.AutorRepositoy;
 import com.alura.challengejavalivros.services.ConsultaApi;
 import com.alura.challengejavalivros.services.ConverteDados;
@@ -61,9 +58,13 @@ public class Menu {
         var json = consulta.resultadoApi(URL_API + titulo);
         Livro results = conversor.obterDados(json, Livro.class);
 
-        var autor = results.result().getFirst().autores().getFirst();
-        AutorDb autorDb = new AutorDb(autor);
-        repositorio.save(autorDb);
+        var livro = results.result().getFirst();
+
+        LivroDb livroDb = new LivroDb(livro);
+        AutorDb autorDb = new AutorDb(livro.autores().getFirst());
+
+        repositorio.save(livroDb.getAutor());
+        repositorio.save(livroDb.getAutor());
     }
 
 }
