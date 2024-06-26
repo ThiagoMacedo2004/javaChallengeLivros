@@ -1,5 +1,7 @@
 package com.alura.challengejavalivros.menu;
 
+import com.alura.challengejavalivros.DTO.DadosLivro;
+import com.alura.challengejavalivros.DTO.DadosResult;
 import com.alura.challengejavalivros.model.*;
 import com.alura.challengejavalivros.repository.AutorRepositoy;
 import com.alura.challengejavalivros.services.ConsultaApi;
@@ -55,16 +57,18 @@ public class Menu {
     }
 
     public void salvarAutor(String titulo) {
-        var json = consulta.resultadoApi(URL_API + titulo);
-        Livro results = conversor.obterDados(json, Livro.class);
+        String json = consulta.resultadoApi(URL_API + titulo);
 
-        var livro = results.result().getFirst();
+        var dadosLivro = conversor.obterDados(json, DadosResult.class);
 
-        LivroDb livroDb = new LivroDb(livro);
-        AutorDb autorDb = new AutorDb(livro.autores().getFirst());
+        Autor autor = new Autor(dadosLivro.livros().getFirst().autores().getFirst());
+        Livro livro = new Livro(dadosLivro.livros().getFirst());
+        livro.setAutor(autor);
 
-        repositorio.save(livroDb.getAutor());
-        repositorio.save(livroDb.getAutor());
+        repositorio.save(livro);
+
+
+        System.out.println(dadosLivro);
     }
 
 }

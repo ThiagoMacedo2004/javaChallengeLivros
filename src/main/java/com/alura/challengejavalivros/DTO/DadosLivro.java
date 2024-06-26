@@ -1,4 +1,4 @@
-package com.alura.challengejavalivros.model;
+package com.alura.challengejavalivros.DTO;
 
 import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -6,10 +6,10 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.util.List;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public record Results(
+public record DadosLivro(
         @JsonAlias("title") String titulo,
-        @JsonAlias("authors") List<Autor> autores,
-        @JsonAlias("languages") List<String> idioma,
+        @JsonAlias("authors") List<DadosAutor> autores,
+        @JsonAlias("languages") List<String> idiomas,
         @JsonAlias("download_count") Integer downloads
 ) {
 }

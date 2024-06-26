@@ -1,11 +1,73 @@
 package com.alura.challengejavalivros.model;
 
-import com.fasterxml.jackson.annotation.JsonAlias;
+import com.alura.challengejavalivros.DTO.DadosAutor;
+import jakarta.persistence.*;
 
-public record Autor(
-        @JsonAlias("name") String nome,
-        @JsonAlias("birth_year") Integer dataNascimento,
-        @JsonAlias("death_year") Integer dataMorte
+import java.util.ArrayList;
+import java.util.List;
 
-) {
+
+@Entity
+@Table(name = "autores")
+public class Autor {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    private String nome;
+
+    private Integer anoNascimento;
+
+    private Integer anoMorte;
+
+    @OneToMany(mappedBy = "autor", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private List<Livro> livro = new ArrayList<>();
+
+    public Autor(){}
+
+    public Autor(DadosAutor dadosAutor) {
+        this.nome = dadosAutor.nome();
+        this.anoNascimento = dadosAutor.anoNascimento();
+        this.anoMorte = dadosAutor.anoMorte();
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getNome() {
+        return nome;
+    }
+
+    public void setNome(String nome) {
+        this.nome = nome;
+    }
+
+    public Integer getAnoNascimento() {
+        return anoNascimento;
+    }
+
+    public void setAnoNascimento(Integer anoNascimento) {
+        this.anoNascimento = anoNascimento;
+    }
+
+    public Integer getAnoMorte() {
+        return anoMorte;
+    }
+
+    public void setAnoMorte(Integer anoMorte) {
+        this.anoMorte = anoMorte;
+    }
+
+    public List<Livro> getLivro() {
+        return livro;
+    }
+
+    public void setLivro(List<Livro> livro) {
+        this.livro = livro;
+    }
 }
