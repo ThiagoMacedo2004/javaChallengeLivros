@@ -27,7 +27,7 @@ public class Autor {
     public Autor(){}
 
     public Autor(DadosAutor dadosAutor) {
-        this.nome = dadosAutor.nome();
+        this.nome = dadosAutor.nome().toLowerCase();
         this.anoNascimento = dadosAutor.anoNascimento();
         this.anoMorte = dadosAutor.anoMorte();
     }
@@ -69,6 +69,7 @@ public class Autor {
     }
 
     public void setLivro(List<Livro> livro) {
+        livro.forEach(l -> l.setAutor(this));
         this.livro = livro;
     }
 }

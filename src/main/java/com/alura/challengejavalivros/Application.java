@@ -1,7 +1,7 @@
 package com.alura.challengejavalivros;
 
 import com.alura.challengejavalivros.menu.Menu;
-import com.alura.challengejavalivros.repository.AutorRepositoy;
+import com.alura.challengejavalivros.repository.LivroRepositoy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -11,7 +11,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class Application implements CommandLineRunner {
 
 	@Autowired
-	private AutorRepositoy repositorio;
+	private LivroRepositoy repositorio;
 
 
     public static void main(String[] args) {

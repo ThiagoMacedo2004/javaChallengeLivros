@@ -23,7 +23,7 @@ public class Livro {
     public Livro(){}
 
     public Livro(DadosLivro dadosLivro) {
-        this.titulo = dadosLivro.titulo();
+        this.titulo = dadosLivro.titulo().toLowerCase();
         this.idioma = dadosLivro.idiomas().getFirst();
         this.downloads = dadosLivro.downloads();
     }

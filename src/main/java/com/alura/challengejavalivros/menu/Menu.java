@@ -1,14 +1,11 @@
 package com.alura.challengejavalivros.menu;
 
-import com.alura.challengejavalivros.DTO.DadosLivro;
 import com.alura.challengejavalivros.DTO.DadosResult;
 import com.alura.challengejavalivros.model.*;
-import com.alura.challengejavalivros.repository.AutorRepositoy;
+import com.alura.challengejavalivros.repository.LivroRepositoy;
 import com.alura.challengejavalivros.services.ConsultaApi;
 import com.alura.challengejavalivros.services.ConverteDados;
 
-import javax.xml.transform.Result;
-import java.util.List;
 import java.util.Scanner;
 
 public class Menu {
@@ -17,9 +14,9 @@ public class Menu {
     private Scanner scanner = new Scanner(System.in);
     private ConverteDados conversor = new ConverteDados();
 
-    private final AutorRepositoy repositorio;
-
-    public Menu(AutorRepositoy repositorio) {
+    private final LivroRepositoy repositorio;
+    private boolean mostrarMenu = true;
+    public Menu(LivroRepositoy repositorio) {
         this.repositorio = repositorio;
     }
 
@@ -35,7 +32,7 @@ public class Menu {
                 5) Listar livro em um determinado idioma
                 0) Sair
                 """;
-        boolean mostrarMenu = true;
+
         while (mostrarMenu) {
             System.out.println(menu);
             var opcao = scanner.nextLine();
@@ -43,7 +40,6 @@ public class Menu {
             switch (opcao) {
                 case "1":
                     this.buscarLivroPeloTitulo();
-                    mostrarMenu = false;
                     break;
                 default:
                     mostrarMenu = false;
@@ -56,19 +52,38 @@ public class Menu {
 
     public void buscarLivroPeloTitulo() {
 
-        System.out.println("Informe o um título: ");
+        System.out.println("Informe um título: ");
         var titulo = scanner.nextLine().toLowerCase().replace(" ", "%20");
+        boolean livroCadastrado =  this.verificaLivroCadastrado(titulo.replace("%20", " "));
 
-        String json = consulta.resultadoApi(URL_API + titulo);
-        var dadosLivro = conversor.obterDados(json, DadosResult.class);
+        if(!livroCadastrado) {
+            String json = consulta.resultadoApi(URL_API + titulo);
+            var dadosLivro = conversor.obterDados(json, DadosResult.class);
 
-        Autor autor = new Autor(dadosLivro.livros().getFirst().autores().getFirst());
-        Livro livro = new Livro(dadosLivro.livros().getFirst());
-        livro.setAutor(autor);
-        repositorio.save(livro);
+            Autor autor = new Autor(dadosLivro.livros().getFirst().autores().getFirst());
+            Livro livro = new Livro(dadosLivro.livros().getFirst());
+            livro.setAutor(autor);
+            repositorio.save(livro);
 
-        System.out.println("LIVRO ENCONTRADO:");
-        System.out.println(livro);
+            System.out.println("LIVRO ENCONTRADO:");
+            System.out.println(livro);
+        }
+
+        this.mostrarMenu = false;
+
+    }
+    public Boolean verificaLivroCadastrado(String titulo) {
+        var tituloJaCadastrado = repositorio.existsByTitulo(titulo);
+//
+        if(tituloJaCadastrado) {
+            var livroDb = repositorio.findByTitulo(titulo);
+            System.out.println("LIVRO JÁ CADASTRADO");
+            System.out.println(livroDb);
+            return true;
+        }
+
+        return false;
+
     }
 
 }
