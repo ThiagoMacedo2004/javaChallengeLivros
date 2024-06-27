@@ -10,6 +10,7 @@ public class Livro {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(unique = true)
     private String titulo;
 
     private String idioma;
@@ -65,5 +66,15 @@ public class Livro {
 
     public void setAutor(Autor autor) {
         this.autor = autor;
+    }
+
+    @Override
+    public String toString() {
+        return
+                "-----------------------------" +
+                "\nTítulo: " + this.titulo +
+                "\nAutor: " + this.autor.getNome() +
+                "\nIdioma: " + this.idioma +
+                "\nDownloads: " + this.downloads + "\n";
     }
 }

@@ -42,9 +42,7 @@ public class Menu {
 
             switch (opcao) {
                 case "1":
-                    System.out.println("Informe o um título: ");
-                    var titulo = scanner.nextLine().toLowerCase().replace(" ", "%20");
-                    this.salvarAutor(titulo);
+                    this.buscarLivroPeloTitulo();
                     mostrarMenu = false;
                     break;
                 default:
@@ -56,19 +54,21 @@ public class Menu {
 
     }
 
-    public void salvarAutor(String titulo) {
-        String json = consulta.resultadoApi(URL_API + titulo);
+    public void buscarLivroPeloTitulo() {
 
+        System.out.println("Informe o um título: ");
+        var titulo = scanner.nextLine().toLowerCase().replace(" ", "%20");
+
+        String json = consulta.resultadoApi(URL_API + titulo);
         var dadosLivro = conversor.obterDados(json, DadosResult.class);
 
         Autor autor = new Autor(dadosLivro.livros().getFirst().autores().getFirst());
         Livro livro = new Livro(dadosLivro.livros().getFirst());
         livro.setAutor(autor);
-
         repositorio.save(livro);
 
-
-        System.out.println(dadosLivro);
+        System.out.println("LIVRO ENCONTRADO:");
+        System.out.println(livro);
     }
 
 }
