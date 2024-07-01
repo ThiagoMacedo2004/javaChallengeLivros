@@ -21,8 +21,17 @@ public class Autor {
 
     private Integer anoMorte;
 
-    @OneToMany(mappedBy = "autor", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
+    @OneToMany(mappedBy = "autor", cascade = CascadeType.MERGE, fetch = FetchType.EAGER, orphanRemoval = true)
     private List<Livro> livro = new ArrayList<>();
+
+    public Autor() {}
+
+    public Autor(String nome, Integer anoNascimento, Integer anoMorte, Long id){
+        this.nome = nome;
+        this.anoNascimento = anoNascimento;
+        this.anoMorte = anoMorte;
+        this.id = id;
+    }
 
     public Autor(DadosAutor dadosAutor) {
         this.nome = dadosAutor.nome().toLowerCase();
@@ -30,7 +39,7 @@ public class Autor {
         this.anoMorte = dadosAutor.anoMorte();
     }
 
-    public Autor(){}
+
 
     public Long getId() {
         return id;

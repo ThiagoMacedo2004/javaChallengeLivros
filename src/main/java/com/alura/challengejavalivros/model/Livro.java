@@ -19,6 +19,7 @@ public class Livro {
     private Integer downloads;
 
     @ManyToOne(cascade=CascadeType.PERSIST)
+    @JoinColumn(name = "autor_id")
     private Autor autor;
 
     public Livro(){}

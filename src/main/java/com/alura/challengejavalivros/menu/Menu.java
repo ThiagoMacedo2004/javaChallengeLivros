@@ -100,24 +100,24 @@ public class Menu {
 
     public void verificaAutorCadastrado(DadosLivro dadosLivro) {
         System.out.println(dadosLivro.autores().getFirst().nome());
-        var autor = autorRepository.findByNome(dadosLivro.autores().getFirst().nome());
+        Autor autor = autorRepository.findByNome(dadosLivro.autores().getFirst().nome().toLowerCase());
 
-        System.out.println("testttttttt");
-        System.out.println(autor);
-        Livro livro = new Livro(dadosLivro);
-        List<Livro> listaLivros = new ArrayList<>();
-        listaLivros.add(livro);
-        if(autor.isPresent()) {
-           Autor autor1 = new Autor();
-           autor1.setNome(autor.get().getNome());
-           autor1.setAnoNascimento(autor.get().getAnoNascimento());
-           autor1.setAnoMorte(autor.get().getAnoMorte());
-           autor1.setLivro(listaLivros);
 
-           autorRepository.save(autor1);
+        if(autor == null) {
+            System.out.println("O autor não existe ");
+            Autor autor3 = new Autor(dadosLivro.autores().getFirst());
+            Livro livro2 = new Livro(dadosLivro);
+            livro2.setAutor(autor3);
+           repositorio.save(livro2);
         } else {
-            
-            repositorio.save(livro);
+            Livro livro = new Livro(dadosLivro);
+            livro.setAutor(autor);
+            List<Livro> listaLivros = new ArrayList<>();
+            listaLivros.add(livro);
+            System.out.println("O autor já existe: " + autor.getNome());
+            Autor autor1 = new Autor(autor.getNome(), autor.getAnoNascimento(), autor.getAnoMorte(), autor.getId());
+            autor1.setLivro(listaLivros);
+            autorRepository.save(autor1);
         }
 
     }
