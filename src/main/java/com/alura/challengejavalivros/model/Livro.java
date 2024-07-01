@@ -1,5 +1,6 @@
 package com.alura.challengejavalivros.model;
 
+import com.alura.challengejavalivros.DTO.DadosAutor;
 import com.alura.challengejavalivros.DTO.DadosLivro;
 import jakarta.persistence.*;
 
@@ -60,12 +61,8 @@ public class Livro {
         this.downloads = downloads;
     }
 
-    public Autor getAutor() {
-        return autor;
-    }
-
-    public void setAutor(Autor autor) {
-        this.autor = autor;
+    public void setAutor(Autor dadosAutor) {
+        this.autor = dadosAutor;
     }
 
     @Override
@@ -77,4 +74,5 @@ public class Livro {
                 "\nIdioma: " + this.idioma +
                 "\nDownloads: " + this.downloads + "\n";
     }
+
 }

@@ -1,11 +1,17 @@
 package com.alura.challengejavalivros.menu;
 
+import com.alura.challengejavalivros.DTO.DadosAutor;
+import com.alura.challengejavalivros.DTO.DadosLivro;
 import com.alura.challengejavalivros.DTO.DadosResult;
 import com.alura.challengejavalivros.model.*;
+import com.alura.challengejavalivros.repository.AutorRepository;
 import com.alura.challengejavalivros.repository.LivroRepositoy;
 import com.alura.challengejavalivros.services.ConsultaApi;
 import com.alura.challengejavalivros.services.ConverteDados;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 import java.util.Scanner;
 
 public class Menu {
@@ -15,9 +21,12 @@ public class Menu {
     private ConverteDados conversor = new ConverteDados();
 
     private final LivroRepositoy repositorio;
+    private final AutorRepository autorRepository;
+
     private boolean mostrarMenu = true;
-    public Menu(LivroRepositoy repositorio) {
+    public Menu(LivroRepositoy repositorio, AutorRepository autorRepository) {
         this.repositorio = repositorio;
+        this.autorRepository = autorRepository;
     }
 
     public void menu() {
@@ -60,13 +69,16 @@ public class Menu {
             String json = consulta.resultadoApi(URL_API + titulo);
             var dadosLivro = conversor.obterDados(json, DadosResult.class);
 
-            Autor autor = new Autor(dadosLivro.livros().getFirst().autores().getFirst());
-            Livro livro = new Livro(dadosLivro.livros().getFirst());
-            livro.setAutor(autor);
-            repositorio.save(livro);
+            this.verificaAutorCadastrado(dadosLivro.livros().getFirst());
 
-            System.out.println("LIVRO ENCONTRADO:");
-            System.out.println(livro);
+
+
+//            Livro livro = new Livro(dadosLivro.livros().getFirst());
+//            livro.setAutor(autor);
+//            repositorio.save(livro);
+//
+//            System.out.println("LIVRO ENCONTRADO:");
+//            System.out.println(livro);
         }
 
         this.mostrarMenu = false;
@@ -83,6 +95,30 @@ public class Menu {
         }
 
         return false;
+
+    }
+
+    public void verificaAutorCadastrado(DadosLivro dadosLivro) {
+        System.out.println(dadosLivro.autores().getFirst().nome());
+        var autor = autorRepository.findByNome(dadosLivro.autores().getFirst().nome());
+
+        System.out.println("testttttttt");
+        System.out.println(autor);
+        Livro livro = new Livro(dadosLivro);
+        List<Livro> listaLivros = new ArrayList<>();
+        listaLivros.add(livro);
+        if(autor.isPresent()) {
+           Autor autor1 = new Autor();
+           autor1.setNome(autor.get().getNome());
+           autor1.setAnoNascimento(autor.get().getAnoNascimento());
+           autor1.setAnoMorte(autor.get().getAnoMorte());
+           autor1.setLivro(listaLivros);
+
+           autorRepository.save(autor1);
+        } else {
+            
+            repositorio.save(livro);
+        }
 
     }
 
