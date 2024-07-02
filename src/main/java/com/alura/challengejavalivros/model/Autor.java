@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Entity
@@ -86,8 +87,20 @@ public class Autor {
 
     @Override
     public String toString() {
-        return "Nome: " + this.getNome() +
-                "\n Data Nascimento: " + this.anoNascimento +
-                "\n Data Morte: " + this.anoMorte;
+        return """
+                Autor: %s
+                Data Nascimento: %d
+                Data Morte: %d
+                Livros: %s
+                """.formatted(
+                        this.getNome(),
+                        this.getAnoNascimento(),
+                        this.getAnoMorte(),
+                        this.livro.stream().
+                                map(Livro::getTitulo).
+                                collect(Collectors.toList())
+                );
+
+
     }
 }

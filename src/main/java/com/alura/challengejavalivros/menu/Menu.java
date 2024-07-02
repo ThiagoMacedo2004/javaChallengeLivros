@@ -50,12 +50,25 @@ public class Menu {
                 case "1":
                     this.buscarLivroPeloTitulo();
                     break;
-                default:
-                    mostrarMenu = false;
+
+                case "2":
+                    this.listarLivrosCadastrados();
                     break;
+
+                case "3":
+                    this.listarAutoresRegistrados();
+                    break;
+
+                case "0":
+                    this.mostrarMenu = false;
+                    break;
+
+                default:
+                    System.out.println("Opção invalida. Selecione uma opção valida, ou '0'(ZERO) para sair");
+                    break;
+
             }
         }
-
 
     }
 
@@ -63,26 +76,21 @@ public class Menu {
 
         System.out.println("Informe um título: ");
         var titulo = scanner.nextLine().toLowerCase().replace(" ", "%20");
+
         boolean livroCadastrado =  this.verificaLivroCadastrado(titulo.replace("%20", " "));
 
         if(!livroCadastrado) {
             String json = consulta.resultadoApi(URL_API + titulo);
             var dadosLivro = conversor.obterDados(json, DadosResult.class);
 
-            this.verificaAutorCadastrado(dadosLivro.livros().getFirst());
+            if(dadosLivro.livros().isEmpty()) {
+                System.out.println("Livro não encontrado");
+            } else {
+                this.verificaAutorCadastrado(dadosLivro.livros().getFirst());
+            }
 
 
-
-//            Livro livro = new Livro(dadosLivro.livros().getFirst());
-//            livro.setAutor(autor);
-//            repositorio.save(livro);
-//
-//            System.out.println("LIVRO ENCONTRADO:");
-//            System.out.println(livro);
         }
-
-        this.mostrarMenu = false;
-
     }
     public Boolean verificaLivroCadastrado(String titulo) {
         var tituloJaCadastrado = repositorio.existsByTitulo(titulo);
@@ -104,22 +112,62 @@ public class Menu {
 
 
         if(autor == null) {
-            System.out.println("O autor não existe ");
+            System.out.println("O autor não existe: " + dadosLivro.autores().getFirst().nome());
+
             Autor autor3 = new Autor(dadosLivro.autores().getFirst());
+
             Livro livro2 = new Livro(dadosLivro);
             livro2.setAutor(autor3);
-           repositorio.save(livro2);
+            repositorio.save(livro2);
+
+            System.out.println("Livro encontrado e salvo no banco de dados!");
+            System.out.println(livro2);
         } else {
             Livro livro = new Livro(dadosLivro);
             livro.setAutor(autor);
             List<Livro> listaLivros = new ArrayList<>();
             listaLivros.add(livro);
+
             System.out.println("O autor já existe: " + autor.getNome());
             Autor autor1 = new Autor(autor.getNome(), autor.getAnoNascimento(), autor.getAnoMorte(), autor.getId());
             autor1.setLivro(listaLivros);
             autorRepository.save(autor1);
+
+            System.out.println("Livro encontrado e salvo no banco de dados!");
+            System.out.println(livro);
+        }
+    }
+
+    private void listarLivrosCadastrados() {
+        List<Livro> livros = repositorio.findAll();
+
+        if(livros.isEmpty()) {
+            System.out.println("Não há livros cadastrados no banco de dados");
+        } else {
+            System.out.println("""
+                    ------------------------------------------------
+                    LIVROS CADASTRADOS
+                    ------------------------------------------------
+                    """);
+            livros.forEach(System.out::println);
         }
 
+
+    }
+
+    public void listarAutoresRegistrados() {
+        List<Autor> autores = autorRepository.findAll();
+
+        if(autores.isEmpty()) {
+            System.out.println("Não há autores cadastrados no banco de dados");
+        } else {
+            System.out.println("""
+                    ------------------------------------------------
+                    AUTORES CADASTRADOS
+                    ------------------------------------------------
+                    """);
+            autores.forEach(System.out::println);
+        }
     }
 
 }

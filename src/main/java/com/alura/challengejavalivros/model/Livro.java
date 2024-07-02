@@ -69,7 +69,7 @@ public class Livro {
     @Override
     public String toString() {
         return
-                "-----------------------------" +
+                "------------------------------------------------" +
                 "\nTítulo: " + this.titulo +
                 "\nAutor: " + this.autor.getNome() +
                 "\nIdioma: " + this.idioma +
