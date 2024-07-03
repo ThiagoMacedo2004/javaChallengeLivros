@@ -48,15 +48,38 @@ public class Menu {
 
             switch (opcao) {
                 case "1":
+                    System.out.println("""
+                            Opção selecionada => 1) Buscar livro pelo seu título
+                            """);
                     this.buscarLivroPeloTitulo();
                     break;
 
                 case "2":
+                    System.out.println("""
+                            Opção selecionada => 2) Listar livros registrados
+                            """);
                     this.listarLivrosCadastrados();
                     break;
 
                 case "3":
+                    System.out.println("""
+                             Opção selecionada => 3) Listar autores registrados
+                            """);
                     this.listarAutoresRegistrados();
+                    break;
+
+                case "4":
+                    System.out.println("""
+                            Opção selecionada => 4) Listar autores vivos em um determinado ano
+                            """);
+                    this.autoresVivos();
+                    break;
+
+                case "5":
+                    System.out.println("""
+                            Opção selecionada => 5) Listar livro em um determinado idioma
+                            """);
+                    this.listarLivroIdioma();
                     break;
 
                 case "0":
@@ -167,6 +190,44 @@ public class Menu {
                     ------------------------------------------------
                     """);
             autores.forEach(System.out::println);
+        }
+    }
+
+    public void autoresVivos() {
+        System.out.println("Digite o ano: ");
+        var anoInput = scanner.nextLine();
+
+        try {
+            Integer ano = Integer.valueOf(anoInput);
+            List<Autor> autores = autorRepository.findAutoresVivo(ano);
+            if(autores.isEmpty()) {
+                System.out.println("Autor não encontrado.");
+            } else {
+                System.out.println("\nAutores");
+                autores.forEach(System.out::println);
+            }
+        } catch (NumberFormatException n) {
+            System.out.println("O valor informado é inválido => [" + n.getMessage() + "]");
+        }
+
+    }
+
+    public void listarLivroIdioma() {
+        System.out.println("""
+                Insira o idioma para reaizar a busca:
+                es - espanhou
+                en - inglês
+                fr - francês
+                pt - portugês
+                """);
+        var idioma = scanner.nextLine();
+
+        List<Livro> livros = repositorio.findIdiomaLivros(idioma);
+
+        if(livros.isEmpty()) {
+            System.out.println("Nenhum Livro encontrado para o idioma informado");
+        } else {
+            livros.forEach(System.out::println);
         }
     }
 
